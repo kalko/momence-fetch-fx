@@ -1,4 +1,5 @@
 import { Request, Response } from "express"
+import moment from "moment"
 import { fetchLatestRates, fetchRatesByDate, getRates } from "../helpers/rates"
 
 export const updateLatestRates = async (req: Request, res: Response) => {
@@ -13,6 +14,9 @@ export const updateLatestRates = async (req: Request, res: Response) => {
 export const updateRatesByDate = async (req: Request, res: Response) => {
   try {
     const { date } = req.params
+    if (!moment(date, "YYYY-MM-DD", true).isValid()) {
+      res.status(400).json({ error: "Invalid date format" })
+    }
     const rates = await fetchRatesByDate(date)
     res.status(200).json(rates)
   } catch (error) {
@@ -32,6 +36,9 @@ export const getAllRates = async (req: Request, res: Response) => {
 export const getRatesByDate = async (req: Request, res: Response) => {
   try {
     const { date } = req.params
+    if (!moment(date, "YYYY-MM-DD", true).isValid()) {
+      res.status(400).json({ error: "Invalid date format" })
+    }
     const rateDate = new Date(date)
     const rates = await getRates(rateDate)
     res.json(rates)

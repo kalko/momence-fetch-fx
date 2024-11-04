@@ -21,7 +21,6 @@ app.get("/", (req, res) => {
 app.post("/update/latest", updateLatestRates)
 app.post("/update/:date", updateRatesByDate)
 app.get("/rates", getAllRates)
-// rates/2024-10-10
 app.get("/rates/:date", getRatesByDate)
 
 // Conditionally start the server only when not in test mode
