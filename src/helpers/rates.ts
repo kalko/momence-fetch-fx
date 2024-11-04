@@ -8,8 +8,15 @@ export const fetchLatestRates = async () => {
 
   //   console.log(response)
 
-  const splitRates = response.data.split("\n")[0]
-  console.log(splitRates)
+  //   data: '01 Nov 2024 #213\n' +
+  //   'Country|Currency|Amount|Code|Rate\n' +
+  //   'Australia|dollar|1|AUD|15.323\n' +
+  //   'Brazil|real|1|BRL|4.031\n' +
+  //   'Bulgaria|lev|1|BGN|12.948\n' +
+  //   'Canada|dollar|1|CAD|16.731\n' +
+
+  const forDate = response.data.split("\n")[0]
+  console.log(forDate)
 
   const headers = response.data.split("\n")[1]
   console.log(headers)
@@ -17,8 +24,14 @@ export const fetchLatestRates = async () => {
   const data = response.data.split("\n").slice(2)
   console.log(data)
 
-  const rates = data.map((row: any) => {
-    const [country, currency, amount, code, rate] = row.split("|")
+  const rates = parseCNBData(response.data)
+  console.log(rates)
+}
+
+const parseCNBData = (data: string) => {
+  const lines = data.split("\n").slice(2)
+  const rates = lines.map((line) => {
+    const [country, currency, amount, code, rate] = line.split("|")
     return {
       country,
       currency,
@@ -28,4 +41,5 @@ export const fetchLatestRates = async () => {
       fetchDatetime: new Date(),
     }
   })
+  return rates
 }
