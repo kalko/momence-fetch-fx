@@ -14,54 +14,52 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.getRates = exports.fetchRatesByDate = exports.fetchLatestRates = void 0;
 const axios_1 = __importDefault(require("axios"));
+const console_1 = __importDefault(require("console"));
 const moment_1 = __importDefault(require("moment"));
 const currencyRate_1 = require("../model/currencyRate");
 const BASE_URL = "https://www.cnb.cz/en/financial-markets/foreign-exchange-market/central-bank-exchange-rate-fixing/central-bank-exchange-rate-fixing/daily.txt";
 const fetchLatestRates = () => __awaiter(void 0, void 0, void 0, function* () {
     const response = yield axios_1.default.get(BASE_URL);
-    // extract publised date
-    const forDateStr = response.data
-        .split("\n")[0]
-        .split(" ")
-        .slice(0, -1)
-        .join(" ");
-    // convert to date
-    const forDate = moment_1.default.utc(forDateStr, "DD MMM YYYY").toDate();
-    console.log(forDateStr);
-    console.log(forDate);
-    const rates = parseCNBData(response.data, forDate);
+    const { forDate, rates } = parseCNBData(response.data);
+    console_1.default.log(forDate);
     // update data - will keep only current / actual data
     yield currencyRate_1.CurrencyRate.deleteMany({ forDate });
     yield currencyRate_1.CurrencyRate.insertMany(rates);
-    const storedRates = yield (0, exports.getRates)();
-    //   console.log("Stored Rates", storedRates)
+    //   const storedRates = await getRates()
+    //   console.log(storedRates)
     return rates;
 });
 exports.fetchLatestRates = fetchLatestRates;
-const fetchRatesByDate = (date) => __awaiter(void 0, void 0, void 0, function* () {
-    const url = `${BASE_URL}?date=${date}`;
+const fetchRatesByDate = (dateString) => __awaiter(void 0, void 0, void 0, function* () {
+    const url = `${BASE_URL}?date=${dateString}`;
     const response = yield axios_1.default.get(url);
-    // extract publised date
-    const forDateStr = response.data.split("\n")[0].split(" ").slice(0, -1);
-    // convert to date
-    const forDate = new Date(`${forDateStr[2]}-${forDateStr[1]}-${forDateStr[0]}`);
-    const rates = parseCNBData(response.data, forDate);
-    console.log(forDate);
-    console.log(forDateStr);
-    //   await CurrencyRate.deleteMany({ rateDate: forDate })
-    //   await CurrencyRate.insertMany(rates)
+    const { forDate, rates } = parseCNBData(response.data);
+    console_1.default.log(forDate);
+    yield currencyRate_1.CurrencyRate.deleteMany({ forDate });
+    yield currencyRate_1.CurrencyRate.insertMany(rates);
+    //   await CurrencyRate.deleteMany()
+    //   const currentDate = moment().startOf("day").toDate()
+    //   const date: Date = moment.utc(dateString, "DD MMM YYYY").toDate()
+    //   console.log("Date", date)
+    const storedRates = yield (0, exports.getRates)();
+    //   const storedRates = await getRates(forDate)
+    console_1.default.log(storedRates);
     return rates;
 });
 exports.fetchRatesByDate = fetchRatesByDate;
-const getRates = () => __awaiter(void 0, void 0, void 0, function* () {
-    return yield currencyRate_1.CurrencyRate.find({});
+const getRates = (forDate) => __awaiter(void 0, void 0, void 0, function* () {
+    return yield currencyRate_1.CurrencyRate.find(forDate ? { forDate } : {});
 });
 exports.getRates = getRates;
-const parseCNBData = (data, forDate) => {
+const parseCNBData = (data) => {
     const dataRows = data
         .split("\n")
         .filter((row) => row.trim() !== "")
         .slice(2);
+    // extract publised date
+    const forDateStr = data.split("\n")[0].split(" ").slice(0, -1).join(" ");
+    // convert to date
+    const forDate = moment_1.default.utc(forDateStr, "DD MMM YYYY").toDate();
     const rates = dataRows.map((row) => {
         const [country, currency, amount, code, rate] = row.split("|");
         return {
@@ -70,9 +68,9 @@ const parseCNBData = (data, forDate) => {
             amount: parseFloat(amount),
             code,
             rate: parseFloat(rate),
-            rateDate: forDate,
+            forDate,
             fetchDatetime: new Date(),
         };
     });
-    return rates;
+    return { forDate, rates };
 };

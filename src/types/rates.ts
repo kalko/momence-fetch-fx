@@ -8,8 +8,7 @@ export interface IRate {
   fetchDatetime: Date
 }
 
-export interface ICNBParsed {
-    forDate: 
-    rates: IRate,
-
+export interface ICNBParsedData {
+  forDate: Date
+  rates: IRate[]
 }

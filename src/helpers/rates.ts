@@ -1,23 +1,11 @@
 import axios from "axios"
+import console from "console"
 import moment from "moment"
 import { CurrencyRate } from "../model/currencyRate"
-import { IRate } from "../types/rates"
+import { ICNBParsedData } from "../types/rates"
 
 const BASE_URL =
   "https://www.cnb.cz/en/financial-markets/foreign-exchange-market/central-bank-exchange-rate-fixing/central-bank-exchange-rate-fixing/daily.txt"
-
-const parseForDate = (data: any) => {
-  // extract publised date
-  const forDateStr = data.split("\n")[0].split(" ").slice(0, -1).join(" ")
-
-  // convert to date
-  const forDate = moment.utc(forDateStr, "DD MMM YYYY").toDate()
-  //   const forDate = moment(forDateStr, "DD MMM YYYY").utc().format("YYYY-MM-DD") // formated string
-
-  console.log(forDateStr)
-  console.log(forDate)
-  return forDate
-}
 
 export const fetchLatestRates = async () => {
   const response = await axios.get(BASE_URL)
@@ -30,32 +18,41 @@ export const fetchLatestRates = async () => {
   await CurrencyRate.deleteMany({ forDate })
   await CurrencyRate.insertMany(rates)
 
-  const storedRates = await getRates()
-
-  //   console.log("Stored Rates", storedRates)
+  //   const storedRates = await getRates()
+  //   console.log(storedRates)
 
   return rates
 }
 
-export const fetchRatesByDate = async (date: string) => {
-  const url = `${BASE_URL}?date=${date}`
+export const fetchRatesByDate = async (dateString: string) => {
+  const url = `${BASE_URL}?date=${dateString}`
   const response = await axios.get(url)
 
   const { forDate, rates } = parseCNBData(response.data)
 
   console.log(forDate)
 
-  //   await CurrencyRate.deleteMany({ rateDate: forDate })
-  //   await CurrencyRate.insertMany(rates)
+  await CurrencyRate.deleteMany({ forDate })
+  await CurrencyRate.insertMany(rates)
+  //   await CurrencyRate.deleteMany()
+
+  //   const currentDate = moment().startOf("day").toDate()
+  //   const date: Date = moment.utc(dateString, "DD MMM YYYY").toDate()
+
+  //   console.log("Date", date)
+
+  const storedRates = await getRates()
+  //   const storedRates = await getRates(forDate)
+  console.log(storedRates)
 
   return rates
 }
 
-export const getRates = async () => {
-  return await CurrencyRate.find({})
+export const getRates = async (forDate?: Date) => {
+  return await CurrencyRate.find(forDate ? { forDate } : {})
 }
 
-const parseCNBData = (data: string): IRate[] => {
+const parseCNBData = (data: string): ICNBParsedData => {
   const dataRows = data
     .split("\n")
     .filter((row) => row.trim() !== "")

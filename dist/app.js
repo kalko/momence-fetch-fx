@@ -25,9 +25,9 @@ app.listen(port, () => __awaiter(void 0, void 0, void 0, function* () {
     console.log(`Server is running on port ${port}`);
     try {
         yield (0, databse_1.connectMongoDb)();
-        yield (0, rates_1.fetchLatestRates)();
+        // await fetchLatestRates()
         // daily.txt?date=16.10.2024
-        // await fetchRatesByDate("16.10.2024")
+        yield (0, rates_1.fetchRatesByDate)("10.10.2024");
     }
     catch (err) {
         console.error("Error: ", err);
