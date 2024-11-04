@@ -7,7 +7,9 @@ const mongoDbUrl = process.env.MONGO_DB_URL || "mongodb://127.0.0.1:27017"
 
 export const connectMongoDb = async () => {
   try {
-    await connect(mongoDbUrl)
+    if (process.env.NODE_ENV !== "test") {
+      await connect(mongoDbUrl)
+    }
 
     console.log("Connected to mongoDB")
   } catch (err) {

@@ -19,7 +19,8 @@ const currencyRateSchema = new mongoose.Schema({
   forDate: { type: Date, required: true }, // date for which the rates are published
   fetchDatetime: { type: Date, required: true }, // date when data was fetched
 })
-export const CurrencyRate = mongoose.model<IRateMongo>(
-  "CurrencyRate",
-  currencyRateSchema
-)
+
+// Use existing model if already defined
+export const CurrencyRate =
+  mongoose.models.CurrencyRate ||
+  mongoose.model<IRateMongo>("CurrencyRate", currencyRateSchema)

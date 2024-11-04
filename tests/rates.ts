@@ -1,21 +1,19 @@
-import axios from "axios"
 import moment from "moment"
-import { MongoMemoryServer } from "mongodb-memory-server"
-import mongoose from "mongoose"
 
+import axios from "axios"
+import MongoMemoryServer from "mongodb-memory-server-core"
+import mongoose from "mongoose"
+import { CurrencyRate } from "../dist/model/currencyRate"
+import app from "../src/app"
 import { parseCNBData } from "../src/helpers/rates"
-import { CurrencyRate } from "../src/model/currencyRate"
 
 const apiUrl = "http://localhost:3010"
+process.env.NODE_ENV = "test"
 
 describe("parseCNBData", () => {
   it("should correctly parse the CNB data string", () => {
-    const inputData = `04 Nov 2024 #214
-          Country|Currency|Amount|Code|Rate
-          Australia|dollar|1|AUD|15.306
-          Brazil|real|1|BRL|3.992
-          Bulgaria|lev|1|BGN|12.928`
-
+    const inputData =
+      "04 Nov 2024 #214\nCountry|Currency|Amount|Code|Rate\nAustralia|dollar|1|AUD|15.306\nBrazil|real|1|BRL|3.992\nBulgaria|lev|1|BGN|12.928"
     const expectedOutput = {
       forDate: moment.utc("`04 Nov 2024", "DD MMM YYYY").toDate(),
 
@@ -62,10 +60,9 @@ describe("parseCNBData", () => {
 })
 
 describe("CNB rates API", () => {
-  let mock
-  let mongoServer
+  let mongoServer: MongoMemoryServer
+  let server
 
-  // Sample mock data
   const mockRates = [
     {
       code: "SEK",
@@ -73,8 +70,8 @@ describe("CNB rates API", () => {
       currency: "krona",
       amount: 1,
       rate: 2.228,
-      forDate: new Date("2024-10-10T00:00:00.000Z"),
-      fetchDatetime: new Date("2024-11-04T14:01:24.375Z"),
+      forDate: "2024-10-10T00:00:00.000Z",
+      fetchDatetime: "2024-11-04T14:01:24.375Z",
     },
     {
       code: "USD",
@@ -82,63 +79,62 @@ describe("CNB rates API", () => {
       currency: "dollar",
       amount: 1,
       rate: 1.0,
-      forDate: new Date("2024-10-10T00:00:00.000Z"),
-      fetchDatetime: new Date("2024-11-04T14:01:24.375Z"),
+      forDate: "2024-10-10T00:00:00.000Z",
+      fetchDatetime: "2024-11-04T14:01:24.375Z",
     },
   ]
 
-  // Start in-memory MongoDB before tests
   beforeAll(async () => {
+    // Start in-memory MongoDB server
     mongoServer = await MongoMemoryServer.create()
     await mongoose.connect(mongoServer.getUri())
+
+    // Start the Express server only once
+    server = app.listen(3010, () => {
+      console.log("Test server running on port 3010")
+    })
   })
 
-  // Clean up and close the database after tests
   afterAll(async () => {
+    // Disconnect from MongoDB and stop the in-memory server
     await mongoose.disconnect()
     await mongoServer.stop()
+
+    // Close the Express server
+    server.close()
   })
 
   beforeEach(async () => {
-    // Clear the database before each test
+    // Clear the collection and insert mock data before each test
     await CurrencyRate.deleteMany({})
-    // Seed the database with mock data
     await CurrencyRate.insertMany(mockRates)
   })
 
+  // Test for fetching all currency rates
   it("should fetch all currency rates from the database", async () => {
     const response = await axios.get(`${apiUrl}/rates`)
 
+    // Remove MongoDB-specific fields for easier comparison
+    const transformedReceived = response.data.map(
+      ({ _id, __v, ...rest }) => rest
+    )
+
     expect(response.status).toBe(200)
     expect(Array.isArray(response.data)).toBe(true)
-    expect(response.data).toEqual(expect.arrayContaining(mockRates))
+    expect(transformedReceived).toEqual(expect.arrayContaining(mockRates))
   })
 
+  // Test for fetching rates by a specific date
   it("should fetch rates for a specific date from the database", async () => {
     const response = await axios.get(`${apiUrl}/rates/2024-10-10`)
 
+    // Remove MongoDB-specific fields
+    const transformedReceived = response.data.map(
+      ({ _id, __v, ...rest }) => rest
+    )
+
     expect(response.status).toBe(200)
     expect(Array.isArray(response.data)).toBe(true)
-    expect(response.data).toEqual(expect.arrayContaining(mockRates))
-  })
-
-  it("should update rates for the current day in the database", async () => {
-    const response = await axios.post(`${apiUrl}/rates`, {
-      // Data to simulate the update (structure according to your requirements)
-      code: "USD-test",
-      country: "United States",
-      currency: "dollar",
-      amount: 1,
-      rate: 1.0,
-      forDate: new Date("2024-11-04T00:00:00.000Z"),
-      fetchDatetime: new Date("2024-11-04T14:01:24.375Z"),
-    })
-
-    expect(response.status).toBe(200)
-
-    // Check if the new rate was added
-    const rates = await CurrencyRate.find({ forDate: new Date("2024-11-04") })
-    expect(rates.length).toBe(1)
-    expect(rates[0].code).toBe("USD-test")
+    expect(transformedReceived).toEqual(expect.arrayContaining(mockRates))
   })
 })

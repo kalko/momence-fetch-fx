@@ -24,14 +24,16 @@ app.get("/rates", getAllRates)
 // rates/2024-10-10
 app.get("/rates/:date", getRatesByDate)
 
-app.listen(port, async () => {
-  console.log(`Server is running on port ${port}`)
-
-  try {
-    await connectMongoDb()
-  } catch (err) {
-    console.error("Error: ", err)
-  }
-})
+// Conditionally start the server only when not in test mode
+if (process.env.NODE_ENV !== "test") {
+  app.listen(port, async () => {
+    console.log(`Server is running on port ${port}`)
+    try {
+      await connectMongoDb()
+    } catch (err) {
+      console.error("Error connecting to MongoDB:", err)
+    }
+  })
+}
 
 export default app
