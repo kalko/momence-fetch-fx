@@ -35,7 +35,7 @@ export const getRates = async (forDate?: Date) => {
   return await CurrencyRate.find(forDate ? { forDate } : {})
 }
 
-const parseCNBData = (data: string): ICNBParsedData => {
+export const parseCNBData = (data: string): ICNBParsedData => {
   const dataRows = data
     .split("\n")
     .filter((row) => row.trim() !== "")

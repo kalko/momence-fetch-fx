@@ -18,9 +18,10 @@ app.get("/", (req, res) => {
   console.log("Hi")
 })
 
-app.get("/update/latest", updateLatestRates)
-app.get("/update/:date", updateRatesByDate)
+app.post("/update/latest", updateLatestRates)
+app.post("/update/:date", updateRatesByDate)
 app.get("/rates", getAllRates)
+// rates/2024-10-10
 app.get("/rates/:date", getRatesByDate)
 
 app.listen(port, async () => {
@@ -32,3 +33,5 @@ app.listen(port, async () => {
     console.error("Error: ", err)
   }
 })
+
+export default app

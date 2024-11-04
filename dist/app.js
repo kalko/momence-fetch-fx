@@ -22,8 +22,8 @@ app.get("/", (req, res) => {
     res.send("Hi");
     console.log("Hi");
 });
-app.get("/update/latest", rates_1.updateLatestRates);
-app.get("/update/:date", rates_1.updateRatesByDate);
+app.post("/update/latest", rates_1.updateLatestRates);
+app.post("/update/:date", rates_1.updateRatesByDate);
 app.get("/rates", rates_1.getAllRates);
 app.get("/rates/:date", rates_1.getRatesByDate);
 app.listen(port, () => __awaiter(void 0, void 0, void 0, function* () {

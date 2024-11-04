@@ -14,14 +14,12 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.getRates = exports.fetchRatesByDate = exports.fetchLatestRates = void 0;
 const axios_1 = __importDefault(require("axios"));
-const console_1 = __importDefault(require("console"));
 const moment_1 = __importDefault(require("moment"));
 const currencyRate_1 = require("../model/currencyRate");
 const BASE_URL = "https://www.cnb.cz/en/financial-markets/foreign-exchange-market/central-bank-exchange-rate-fixing/central-bank-exchange-rate-fixing/daily.txt";
 const fetchLatestRates = () => __awaiter(void 0, void 0, void 0, function* () {
     const response = yield axios_1.default.get(BASE_URL);
     const { forDate, rates } = parseCNBData(response.data);
-    console_1.default.log(forDate);
     // update data - will keep only current / actual data
     yield currencyRate_1.CurrencyRate.deleteMany({ forDate });
     yield currencyRate_1.CurrencyRate.insertMany(rates);
@@ -32,7 +30,7 @@ const fetchRatesByDate = (dateString) => __awaiter(void 0, void 0, void 0, funct
     const url = `${BASE_URL}?date=${dateString}`;
     const response = yield axios_1.default.get(url);
     const { forDate, rates } = parseCNBData(response.data);
-    console_1.default.log(forDate);
+    // update data - will keep only current / actual data
     yield currencyRate_1.CurrencyRate.deleteMany({ forDate });
     yield currencyRate_1.CurrencyRate.insertMany(rates);
     return rates;
