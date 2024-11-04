@@ -1,10 +1,11 @@
-version: "3.8"
 services:
   app:
     container_name: momence-fetch-fx
     build: .
     ports:
       - 3010:3010
+    environment:
+      - MONGO_DB_URL=mongodb://mongo:27017 # docker specific mongodb url
     env_file:
       - .env
     depends_on:

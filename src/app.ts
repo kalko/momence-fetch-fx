@@ -7,6 +7,7 @@ const port = 3010
 
 app.get("/", (req, res) => {
   res.send("Hi")
+  console.log("Hi")
 })
 
 app.listen(port, async () => {
