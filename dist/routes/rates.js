@@ -8,12 +8,17 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.getRatesByDate = exports.getAllRates = exports.updateRatesByDate = exports.updateLatestRates = void 0;
+const moment_1 = __importDefault(require("moment"));
 const rates_1 = require("../helpers/rates");
 const updateLatestRates = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const rates = yield (0, rates_1.fetchLatestRates)();
+        console.log("Update current rates succesful");
         res.status(200).json(rates);
     }
     catch (error) {
@@ -24,7 +29,11 @@ exports.updateLatestRates = updateLatestRates;
 const updateRatesByDate = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const { date } = req.params;
+        if (!(0, moment_1.default)(date, "YYYY-MM-DD", true).isValid()) {
+            res.status(400).json({ error: "Invalid date format" });
+        }
         const rates = yield (0, rates_1.fetchRatesByDate)(date);
+        console.log("Update rates by date sucessful");
         res.status(200).json(rates);
     }
     catch (error) {
@@ -35,6 +44,7 @@ exports.updateRatesByDate = updateRatesByDate;
 const getAllRates = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const rates = yield (0, rates_1.getRates)();
+        console.log("Get all rates sucessful");
         res.json(rates);
     }
     catch (error) {
@@ -45,8 +55,12 @@ exports.getAllRates = getAllRates;
 const getRatesByDate = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const { date } = req.params;
+        if (!(0, moment_1.default)(date, "YYYY-MM-DD", true).isValid()) {
+            res.status(400).json({ error: "Invalid date format" });
+        }
         const rateDate = new Date(date);
         const rates = yield (0, rates_1.getRates)(rateDate);
+        console.log("Get rates by date sucessful");
         res.json(rates);
     }
     catch (error) {

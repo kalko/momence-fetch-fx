@@ -26,12 +26,16 @@ app.post("/update/latest", rates_1.updateLatestRates);
 app.post("/update/:date", rates_1.updateRatesByDate);
 app.get("/rates", rates_1.getAllRates);
 app.get("/rates/:date", rates_1.getRatesByDate);
-app.listen(port, () => __awaiter(void 0, void 0, void 0, function* () {
-    console.log(`Server is running on port ${port}`);
-    try {
-        yield (0, databse_1.connectMongoDb)();
-    }
-    catch (err) {
-        console.error("Error: ", err);
-    }
-}));
+// Conditionally start the server only when not in test mode
+if (process.env.NODE_ENV !== "test") {
+    app.listen(port, () => __awaiter(void 0, void 0, void 0, function* () {
+        console.log(`Server is running on port ${port}`);
+        try {
+            yield (0, databse_1.connectMongoDb)();
+        }
+        catch (err) {
+            console.error("Error connecting to MongoDB:", err);
+        }
+    }));
+}
+exports.default = app;

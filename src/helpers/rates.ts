@@ -9,6 +9,8 @@ const BASE_URL =
 export const fetchLatestRates = async () => {
   const response = await axios.get(BASE_URL)
 
+  console.log("Fetching rates from, ", BASE_URL)
+
   const { forDate, rates } = parseCNBData(response.data)
 
   // update data - will keep only current / actual data
@@ -19,8 +21,11 @@ export const fetchLatestRates = async () => {
 }
 
 export const fetchRatesByDate = async (dateString: string) => {
-  const url = `${BASE_URL}?date=${dateString}`
+  const cnbApiLikeDateString = moment(dateString).format("DD.MM.YYYY")
+  const url = `${BASE_URL}?date=${cnbApiLikeDateString}`
   const response = await axios.get(url)
+
+  console.log("Fetching rates from, ", url)
 
   const { forDate, rates } = parseCNBData(response.data)
 
