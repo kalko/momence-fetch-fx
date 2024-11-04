@@ -4,6 +4,12 @@ export interface IRate {
   currency: string
   amount: number
   rate: number
-  rateDate: Date
+  forDate: Date
   fetchDatetime: Date
+}
+
+export interface ICNBParsed {
+    forDate: 
+    rates: IRate,
+
 }
