@@ -46,7 +46,7 @@ export const parseCNBData = (data: string): ICNBParsedData => {
     .filter((row) => row.trim() !== "")
     .slice(2)
 
-  // extract publised date
+  // extract published date
   const forDateStr = data.split("\n")[0].split(" ").slice(0, -1).join(" ")
   // convert to date
   const forDate = moment.utc(forDateStr, "DD MMM YYYY").toDate()
