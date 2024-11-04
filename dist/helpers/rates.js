@@ -14,18 +14,22 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.fetchLatestRates = void 0;
 const axios_1 = __importDefault(require("axios"));
+const currencyRate_1 = require("../model/currencyRate");
 const BASE_URL = "https://www.cnb.cz/en/financial-markets/foreign-exchange-market/central-bank-exchange-rate-fixing/central-bank-exchange-rate-fixing/daily.txt";
 const fetchLatestRates = () => __awaiter(void 0, void 0, void 0, function* () {
     const response = yield axios_1.default.get(BASE_URL);
-    const forDate = response.data.split("\n")[0];
-    console.log(forDate);
-    const headers = response.data.split("\n")[1];
-    console.log(headers);
-    const rates = parseCNBData(response.data);
-    console.log(rates);
+    // extract publised date
+    const forDateStr = response.data.split("\n")[0].split(" ")[0];
+    // convert to date
+    const forDate = new Date(forDateStr);
+    const rates = parseCNBData(response.data, forDate);
+    yield currencyRate_1.CurrencyRate.insertMany(rates);
+    const storedRates = yield currencyRate_1.CurrencyRate.find({});
+    console.log("Stored Rates for Date:", storedRates);
+    return rates;
 });
 exports.fetchLatestRates = fetchLatestRates;
-const parseCNBData = (data) => {
+const parseCNBData = (data, forDate) => {
     const dataRows = data
         .split("\n")
         .filter((row) => row.trim() !== "")
@@ -38,6 +42,7 @@ const parseCNBData = (data) => {
             amount: parseFloat(amount),
             code,
             rate: parseFloat(rate),
+            rateDate: forDate,
             fetchDatetime: new Date(),
         };
     });

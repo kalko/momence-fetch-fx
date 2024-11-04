@@ -16,7 +16,10 @@ export const fetchLatestRates = async () => {
   const rates = parseCNBData(response.data, forDate)
 
   await CurrencyRate.insertMany(rates)
-  console.log(rates)
+
+  const storedRates = await CurrencyRate.find({})
+  console.log("Stored Rates for Date:", storedRates)
+
   return rates
 }
 
