@@ -14,15 +14,18 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
 const databse_1 = require("./databse");
+const rates_1 = require("./helpers/rates");
 const app = (0, express_1.default)();
 const port = 3010;
 app.get("/", (req, res) => {
     res.send("Hi");
+    console.log("Hi");
 });
 app.listen(port, () => __awaiter(void 0, void 0, void 0, function* () {
     console.log(`Server is running on port ${port}`);
     try {
         yield (0, databse_1.connectMongoDb)();
+        yield (0, rates_1.fetchLatestRates)();
     }
     catch (err) {
         console.error("Error: ", err);
