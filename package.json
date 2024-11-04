@@ -1,0 +1,22 @@
+{
+  "name": "momence-fetch-fx",
+  "version": "1.0.0",
+  "description": "Simple REST API to fetch FX rates from CNB",
+  "main": "app.js",
+  "scripts": {
+    "build": "tsc",
+    "start": "npm run build && node ./dist/app.js",
+    "test": "jest"
+  },
+  "author": "Pavol Kascak",
+  "license": "ISC",
+  "devDependencies": {
+    "@types/express": "^5.0.0",
+    "@types/node": "^22.8.6"
+  },
+  "dependencies": {
+    "dotenv": "^16.4.5",
+    "express": "^4.21.1",
+    "mongoose": "^8.8.0"
+  }
+}
