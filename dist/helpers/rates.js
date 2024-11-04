@@ -25,8 +25,6 @@ const fetchLatestRates = () => __awaiter(void 0, void 0, void 0, function* () {
     // update data - will keep only current / actual data
     yield currencyRate_1.CurrencyRate.deleteMany({ forDate });
     yield currencyRate_1.CurrencyRate.insertMany(rates);
-    //   const storedRates = await getRates()
-    //   console.log(storedRates)
     return rates;
 });
 exports.fetchLatestRates = fetchLatestRates;
@@ -37,13 +35,6 @@ const fetchRatesByDate = (dateString) => __awaiter(void 0, void 0, void 0, funct
     console_1.default.log(forDate);
     yield currencyRate_1.CurrencyRate.deleteMany({ forDate });
     yield currencyRate_1.CurrencyRate.insertMany(rates);
-    //   await CurrencyRate.deleteMany()
-    //   const currentDate = moment().startOf("day").toDate()
-    //   const date: Date = moment.utc(dateString, "DD MMM YYYY").toDate()
-    //   console.log("Date", date)
-    const storedRates = yield (0, exports.getRates)();
-    //   const storedRates = await getRates(forDate)
-    console_1.default.log(storedRates);
     return rates;
 });
 exports.fetchRatesByDate = fetchRatesByDate;

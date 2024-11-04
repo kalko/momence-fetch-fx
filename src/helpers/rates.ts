@@ -1,5 +1,4 @@
 import axios from "axios"
-import console from "console"
 import moment from "moment"
 import { CurrencyRate } from "../model/currencyRate"
 import { ICNBParsedData } from "../types/rates"
@@ -12,14 +11,9 @@ export const fetchLatestRates = async () => {
 
   const { forDate, rates } = parseCNBData(response.data)
 
-  console.log(forDate)
-
   // update data - will keep only current / actual data
   await CurrencyRate.deleteMany({ forDate })
   await CurrencyRate.insertMany(rates)
-
-  //   const storedRates = await getRates()
-  //   console.log(storedRates)
 
   return rates
 }
@@ -30,20 +24,9 @@ export const fetchRatesByDate = async (dateString: string) => {
 
   const { forDate, rates } = parseCNBData(response.data)
 
-  console.log(forDate)
-
+  // update data - will keep only current / actual data
   await CurrencyRate.deleteMany({ forDate })
   await CurrencyRate.insertMany(rates)
-  //   await CurrencyRate.deleteMany()
-
-  //   const currentDate = moment().startOf("day").toDate()
-  //   const date: Date = moment.utc(dateString, "DD MMM YYYY").toDate()
-
-  //   console.log("Date", date)
-
-  const storedRates = await getRates()
-  //   const storedRates = await getRates(forDate)
-  console.log(storedRates)
 
   return rates
 }

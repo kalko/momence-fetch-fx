@@ -14,20 +14,22 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
 const databse_1 = require("./databse");
-const rates_1 = require("./helpers/rates");
+const rates_1 = require("./routes/rates");
 const app = (0, express_1.default)();
 const port = 3010;
+app.use(express_1.default.json());
 app.get("/", (req, res) => {
     res.send("Hi");
     console.log("Hi");
 });
+app.get("/update/latest", rates_1.updateLatestRates);
+app.get("/update/:date", rates_1.updateRatesByDate);
+app.get("/rates", rates_1.getAllRates);
+app.get("/rates/:date", rates_1.getRatesByDate);
 app.listen(port, () => __awaiter(void 0, void 0, void 0, function* () {
     console.log(`Server is running on port ${port}`);
     try {
         yield (0, databse_1.connectMongoDb)();
-        // await fetchLatestRates()
-        // daily.txt?date=16.10.2024
-        yield (0, rates_1.fetchRatesByDate)("10.10.2024");
     }
     catch (err) {
         console.error("Error: ", err);
