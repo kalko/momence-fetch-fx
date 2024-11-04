@@ -1,4 +1,6 @@
 import axios from "axios"
+import { CurrencyRate } from "../model/currencyRate"
+import { IRate } from "../types/rates"
 
 const BASE_URL =
   "https://www.cnb.cz/en/financial-markets/foreign-exchange-market/central-bank-exchange-rate-fixing/central-bank-exchange-rate-fixing/daily.txt"
@@ -6,17 +8,19 @@ const BASE_URL =
 export const fetchLatestRates = async () => {
   const response = await axios.get(BASE_URL)
 
-  const forDate = response.data.split("\n")[0]
-  console.log(forDate)
+  // extract publised date
+  const forDateStr = response.data.split("\n")[0].split(" ")[0]
+  // convert to date
+  const forDate = new Date(forDateStr)
 
-  const headers = response.data.split("\n")[1]
-  console.log(headers)
+  const rates = parseCNBData(response.data, forDate)
 
-  const rates = parseCNBData(response.data)
+  await CurrencyRate.insertMany(rates)
   console.log(rates)
+  return rates
 }
 
-const parseCNBData = (data: string) => {
+const parseCNBData = (data: string, forDate: Date): IRate[] => {
   const dataRows = data
     .split("\n")
     .filter((row) => row.trim() !== "")
@@ -30,8 +34,10 @@ const parseCNBData = (data: string) => {
       amount: parseFloat(amount),
       code,
       rate: parseFloat(rate),
+      rateDate: forDate,
       fetchDatetime: new Date(),
     }
   })
+
   return rates
 }

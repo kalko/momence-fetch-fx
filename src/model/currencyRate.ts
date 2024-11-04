@@ -1,5 +1,15 @@
 import mongoose from "mongoose"
 
+export interface IRateMongo extends mongoose.Document {
+  code: number
+  country: string
+  currency: string
+  amount: number
+  rate: string
+  rateDate: Date
+  fetchDatetime: Date
+}
+
 const currencyRateSchema = new mongoose.Schema({
   code: { type: String, required: true },
   country: { type: String, required: true },
@@ -9,5 +19,7 @@ const currencyRateSchema = new mongoose.Schema({
   rateDate: { type: Date, required: true }, // date for which the rates are published
   fetchDatetime: { type: Date, required: true }, // date when data was fetched
 })
-
-export const CurrencyRate = mongoose.model("CurrencyRate", currencyRateSchema)
+export const CurrencyRate = mongoose.model<IRateMongo>(
+  "CurrencyRate",
+  currencyRateSchema
+)
