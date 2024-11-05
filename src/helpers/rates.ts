@@ -37,7 +37,7 @@ export const fetchRatesByDate = async (dateString: string) => {
 }
 
 export const getRates = async (forDate?: Date) => {
-  return await CurrencyRate.find(forDate ? { forDate } : {})
+  return await CurrencyRate.find(forDate ? { forDate } : {}).select("-_id -__v")
 }
 
 export const parseCNBData = (data: string): ICNBParsedData => {

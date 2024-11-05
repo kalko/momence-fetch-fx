@@ -22,5 +22,5 @@ const currencyRateSchema = new mongoose.Schema({
 
 // Use existing model if already defined
 export const CurrencyRate =
-  mongoose.models.CurrencyRate ||
+  (mongoose.models.CurrencyRate as mongoose.Model<IRateMongo>) ||
   mongoose.model<IRateMongo>("CurrencyRate", currencyRateSchema)

@@ -40,7 +40,7 @@ const fetchRatesByDate = (dateString) => __awaiter(void 0, void 0, void 0, funct
 });
 exports.fetchRatesByDate = fetchRatesByDate;
 const getRates = (forDate) => __awaiter(void 0, void 0, void 0, function* () {
-    return yield currencyRate_1.CurrencyRate.find(forDate ? { forDate } : {});
+    return yield currencyRate_1.CurrencyRate.find(forDate ? { forDate } : {}).select("-_id -__v");
 });
 exports.getRates = getRates;
 const parseCNBData = (data) => {
