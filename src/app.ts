@@ -51,7 +51,7 @@ app.get("/", (req, res) => {
  * @swagger
  * /update/latest:
  *   post:
- *     summary: Update today's FX rates
+ *     summary: Update latests FX rates
  *     responses:
  *       200:
  *         description: Rates updated successfully
