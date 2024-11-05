@@ -30,13 +30,9 @@ const swaggerOptions = {
         },
         servers: [
             {
-                servers: [
-                    {
-                        url: process.env.NODE_ENV === "production"
-                            ? "https://momence-fetch-fx.up.railway.app"
-                            : "http://localhost:3010",
-                    },
-                ],
+                url: process.env.NODE_ENV === "production"
+                    ? "https://momence-fetch-fx.up.railway.app"
+                    : "http://localhost:3010",
             },
         ],
     },
@@ -52,7 +48,7 @@ app.get("/", (req, res) => {
  * @swagger
  * /update/latest:
  *   post:
- *     summary: Update today's FX rates
+ *     summary: Update latests FX rates
  *     responses:
  *       200:
  *         description: Rates updated successfully

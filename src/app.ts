@@ -23,16 +23,13 @@ const swaggerOptions = {
       version: "1.0.0",
       description: "API to fetch and store FX rates from CNB",
     },
+
     servers: [
       {
-        servers: [
-          {
-            url:
-              process.env.NODE_ENV === "production"
-                ? "https://momence-fetch-fx.up.railway.app"
-                : "http://localhost:3010",
-          },
-        ],
+        url:
+          process.env.NODE_ENV === "production"
+            ? "https://momence-fetch-fx.up.railway.app"
+            : "http://localhost:3010",
       },
     ],
   },
