@@ -32,6 +32,6 @@ To use and run the application do the following :
 
 - git clone `https://github.com/kalko/momence-fetch-fx.git`
 - cd momence-fetch-fx
-- docker-compose up --build or npm start (make sure your docker is running or you have monogdb installed localy)
+- docker-compose up --build or npm start (make sure your docker is running or you have mongodb installed localy)
 
 Application is now running `http://localhost:3010`
