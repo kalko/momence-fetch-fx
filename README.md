@@ -6,6 +6,7 @@ Simple REST API which can be used to fetch FX rates published by CNB.
 Application is persisting the rates into database.
 
 Application is currently available here: `https://momence-fetch-fx.up.railway.app`
+Application documentation and usage can be demonstrated here: `https://momence-fetch-fx.up.railway.app/api-docs`
 
 - **Endpoints:**
 
@@ -23,12 +24,13 @@ Applications provides following endpoints to 'fetch & store', 'get' the rates:
 
 ## Usage
 
+- The most convenient way is via `https://momence-fetch-fx.up.railway.app/api-docs`.
 - To update the rates use postmant or curl on any other tool capable of making POST requsts.
 - To list the rates use any web browser or any other tool capable of making GET requetes.
 
 ## Setup
 
-To use and run the application do the following :
+To use and run the application localy do the following :
 
 - git clone `https://github.com/kalko/momence-fetch-fx.git`
 - cd momence-fetch-fx
