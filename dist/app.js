@@ -30,7 +30,13 @@ const swaggerOptions = {
         },
         servers: [
             {
-                url: "http://localhost:3010",
+                servers: [
+                    {
+                        url: process.env.NODE_ENV === "production"
+                            ? "https://momence-fetch-fx.up.railway.app"
+                            : "http://localhost:3010",
+                    },
+                ],
             },
         ],
     },
