@@ -23,7 +23,7 @@ const connectMongoDb = () => __awaiter(void 0, void 0, void 0, function* () {
         if (process.env.NODE_ENV !== "test") {
             yield (0, mongoose_1.connect)(mongoDbUrl);
         }
-        console.log("Connected to mongoDB, ", mongoDbUrl);
+        console.log("Connected to mongoDB at", mongoDbUrl);
     }
     catch (err) {
         console.error("Error", err);

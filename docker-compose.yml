@@ -5,7 +5,7 @@ services:
     ports:
       - 3010:3010
     environment:
-      - MONGO_DB_URL==${MONGO_DB_URL} # docker specific mongodb url
+      - MONGO_DB_URL=mongodb://mongo:27017 # docker specific mongodb url
     env_file:
       - .env
     depends_on:
@@ -16,6 +16,8 @@ services:
   mongo:
     image: mongo:5.0
     container_name: momence-fetch-fx-mongo-db
+    ports:
+      - "27017:27017"
     volumes:
       - mongo-data:/data/db
     networks:
