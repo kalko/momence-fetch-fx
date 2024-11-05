@@ -16,13 +16,14 @@ exports.connectMongoDb = void 0;
 const dotenv_1 = __importDefault(require("dotenv"));
 const mongoose_1 = require("mongoose");
 dotenv_1.default.config();
-const mongoDbUrl = process.env.MONGO_DB_URL || "mongodb://127.0.0.1:27017";
+const mongoDbUrl = process.env.MONGO_DB_URL || "mongodb://mongo:27017";
+// const mongoDbUrl = process.env.MONGO_DB_URL || "mongodb://127.0.0.1:27017"
 const connectMongoDb = () => __awaiter(void 0, void 0, void 0, function* () {
     try {
         if (process.env.NODE_ENV !== "test") {
             yield (0, mongoose_1.connect)(mongoDbUrl);
         }
-        console.log("Connected to mongoDB");
+        console.log("Connected to mongoDB, ", mongoDbUrl);
     }
     catch (err) {
         console.error("Error", err);
