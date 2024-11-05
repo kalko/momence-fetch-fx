@@ -11,7 +11,7 @@ Application is currently available here: `https://momence-fetch-fx.up.railway.ap
 
 Applications provides following endpoints to 'fetch & store', 'get' the rates:
 
-- `POST /update/latest`: Updates current day rates => fetches and stores the data.
+- `POST /update/latest`: Updates latest rates (per CNB web page) => fetches and stores the data.
 - `POST /update/:date`: Updates rates for specified date => fetches and stores the data.
 - `GET /rates`: List all rates.
 - `GET /rates/:date`: List rates for sepcified date.

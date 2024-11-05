@@ -24,7 +24,6 @@ const fetchLatestRates = () => __awaiter(void 0, void 0, void 0, function* () {
     // update data - will keep only current / actual data
     yield currencyRate_1.CurrencyRate.deleteMany({ forDate });
     yield currencyRate_1.CurrencyRate.insertMany(rates);
-    return rates;
 });
 exports.fetchLatestRates = fetchLatestRates;
 const fetchRatesByDate = (dateString) => __awaiter(void 0, void 0, void 0, function* () {
@@ -36,7 +35,6 @@ const fetchRatesByDate = (dateString) => __awaiter(void 0, void 0, void 0, funct
     // update data - will keep only current / actual data
     yield currencyRate_1.CurrencyRate.deleteMany({ forDate });
     yield currencyRate_1.CurrencyRate.insertMany(rates);
-    return rates;
 });
 exports.fetchRatesByDate = fetchRatesByDate;
 const getRates = (forDate) => __awaiter(void 0, void 0, void 0, function* () {

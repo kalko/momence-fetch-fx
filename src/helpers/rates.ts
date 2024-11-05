@@ -16,8 +16,6 @@ export const fetchLatestRates = async () => {
   // update data - will keep only current / actual data
   await CurrencyRate.deleteMany({ forDate })
   await CurrencyRate.insertMany(rates)
-
-  return rates
 }
 
 export const fetchRatesByDate = async (dateString: string) => {
@@ -32,8 +30,6 @@ export const fetchRatesByDate = async (dateString: string) => {
   // update data - will keep only current / actual data
   await CurrencyRate.deleteMany({ forDate })
   await CurrencyRate.insertMany(rates)
-
-  return rates
 }
 
 export const getRates = async (forDate?: Date) => {

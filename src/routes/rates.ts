@@ -5,10 +5,10 @@ import { fetchLatestRates, fetchRatesByDate, getRates } from "../helpers/rates"
 export const updateLatestRates = async (req: Request, res: Response) => {
   try {
     const rates = await fetchLatestRates()
-    console.log("Current day rates updated successfully")
-    res.status(200).json("Current day rates updated successfully")
+    console.log("Latest rates updated successfully")
+    res.status(200).json("Latest day rates updated successfully")
   } catch (error) {
-    res.status(500).json({ error: "Error updating current day rates" })
+    res.status(500).json({ error: "Error updating latest rates" })
   }
 }
 

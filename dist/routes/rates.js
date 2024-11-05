@@ -18,11 +18,11 @@ const rates_1 = require("../helpers/rates");
 const updateLatestRates = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const rates = yield (0, rates_1.fetchLatestRates)();
-        console.log("Current day rates updated successfully");
-        res.status(200).json("Current day rates updated successfully");
+        console.log("Latest rates updated successfully");
+        res.status(200).json("Latest day rates updated successfully");
     }
     catch (error) {
-        res.status(500).json({ error: "Error updating current day rates" });
+        res.status(500).json({ error: "Error updating latest rates" });
     }
 });
 exports.updateLatestRates = updateLatestRates;
@@ -53,8 +53,8 @@ const getAllRates = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
 });
 exports.getAllRates = getAllRates;
 const getRatesByDate = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const { date } = req.params;
     try {
-        const { date } = req.params;
         if (!(0, moment_1.default)(date, "YYYY-MM-DD", true).isValid()) {
             res.status(400).json({ error: "Invalid date format" });
         }
@@ -64,7 +64,7 @@ const getRatesByDate = (req, res) => __awaiter(void 0, void 0, void 0, function*
         res.json(rates);
     }
     catch (error) {
-        res.status(500).json({ error: "Error fetching rates by date" });
+        res.status(500).json({ error: `Error fetching rates for date ${date}` });
     }
 });
 exports.getRatesByDate = getRatesByDate;
