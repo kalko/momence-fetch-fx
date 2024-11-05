@@ -16,6 +16,10 @@ Applications provides following endpoints to 'fetch & store', 'get' the rates:
 - `GET /rates`: List all rates.
 - `GET /rates/:date`: List rates for sepcified date.
 
+- **Exemples**
+  `https://momence-fetch-fx.up.railway.app/rates/`
+  `https://momence-fetch-fx.up.railway.app/rates/2024-10-11`
+
 ## Usage
 
 - To update the rates use postmant or curl on any other tool capable of making POST requsts.
