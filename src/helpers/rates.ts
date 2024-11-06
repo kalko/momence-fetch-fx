@@ -1,6 +1,6 @@
 import axios from "axios"
 import moment from "moment"
-import { CurrencyRate } from "../model/currencyRate"
+import { CurrencyRate } from "../models/currencyRate"
 import { ICNBParsedData } from "../types/rates"
 
 const BASE_URL =

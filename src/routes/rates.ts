@@ -1,52 +1,94 @@
-import { Request, Response } from "express"
-import moment from "moment"
-import { fetchLatestRates, fetchRatesByDate, getRates } from "../helpers/rates"
+import express from "express"
+import {
+  getAllRates,
+  getRatesByDate,
+  updateLatestRates,
+  updateRatesByDate,
+} from "../controllers/rates"
+const router = express.Router()
 
-export const updateLatestRates = async (req: Request, res: Response) => {
-  try {
-    const rates = await fetchLatestRates()
-    console.log("Latest rates updated successfully")
-    res.status(200).json("Latest day rates updated successfully")
-  } catch (error) {
-    res.status(500).json({ error: "Error updating latest rates" })
-  }
-}
+/**
+ * @swagger
+ * /update/latest:
+ *   post:
+ *     summary: Update latests FX rates
+ *     responses:
+ *       200:
+ *         description: Rates updated successfully
+ *         content:
+ *           application/json:
+ *             example:
+ *               message: "Latest rates updated successfully"
+ */
+router.post("/update/latest", updateLatestRates)
 
-export const updateRatesByDate = async (req: Request, res: Response) => {
-  const { date } = req.params
-  try {
-    if (!moment(date, "YYYY-MM-DD", true).isValid()) {
-      res.status(400).json({ error: "Invalid date format" })
-    }
-    const rates = await fetchRatesByDate(date)
-    console.log(`Rates for ${date} were updated successfully`)
-    res.status(200).json(`Rates for ${date} were updated successfully`)
-  } catch (error) {
-    res.status(500).json({ error: `Error updating rates for date ${date}` })
-  }
-}
+/**
+ * @swagger
+ * /update/{date}:
+ *   post:
+ *     summary: Update FX rates for a specific date
+ *     parameters:
+ *       - name: date
+ *         in: path
+ *         required: true
+ *         description: Date in YYYY-MM-DD format
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: Rates updated successfully
+ *         content:
+ *           application/json:
+ *             example:
+ *               message: "Rates for 2024-11-05 updated successfully"
+ */
+router.post("/update/:date", updateRatesByDate)
 
-export const getAllRates = async (req: Request, res: Response) => {
-  try {
-    const rates = await getRates()
-    console.log("Get all rates sucessful")
-    res.json(rates)
-  } catch (error) {
-    res.status(500).json({ error: "Error fetching all rates" })
-  }
-}
+/**
+ * @swagger
+ * /rates:
+ *   get:
+ *     summary: List all FX rates
+ *     responses:
+ *       200:
+ *         description: A list of FX rates
+ *         content:
+ *           application/json:
+ *             example:
+ *               - currency: "AUD"
+ *                 rate: 15.306
+ *                 amount: 1
+ *                 country: "Australia"
+ *                 forDate: "2024-11-04"
+ *                 fetchDatetime: "2024-11-05T10:52:03.168Z"
+ */
+router.get("/rates", getAllRates)
 
-export const getRatesByDate = async (req: Request, res: Response) => {
-  const { date } = req.params
-  try {
-    if (!moment(date, "YYYY-MM-DD", true).isValid()) {
-      res.status(400).json({ error: "Invalid date format" })
-    }
-    const rateDate = new Date(date)
-    const rates = await getRates(rateDate)
-    console.log(`Get rates for ${date} sucessful`)
-    res.json(rates)
-  } catch (error) {
-    res.status(500).json({ error: `Error fetching rates for date ${date}` })
-  }
-}
+/**
+ * @swagger
+ * /rates/{date}:
+ *   get:
+ *     summary: List FX rates for a specific date
+ *     parameters:
+ *       - name: date
+ *         in: path
+ *         required: true
+ *         description: Date in YYYY-MM-DD format
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: A list of FX rates for the specified date
+ *         content:
+ *           application/json:
+ *             example:
+ *               - currency: "AUD"
+ *                 rate: 15.306
+ *                 amount: 1
+ *                 country: "Australia"
+ *                 forDate: "2024-11-04"
+ *                 fetchDatetime: "2024-11-05T10:52:03.168Z"
+ */
+router.get("/rates/:date", getRatesByDate)
+
+export default router

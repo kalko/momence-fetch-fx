@@ -15,7 +15,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.parseCNBData = exports.getRates = exports.fetchRatesByDate = exports.fetchLatestRates = void 0;
 const axios_1 = __importDefault(require("axios"));
 const moment_1 = __importDefault(require("moment"));
-const currencyRate_1 = require("../model/currencyRate");
+const currencyRate_1 = require("../models/currencyRate");
 const BASE_URL = "https://www.cnb.cz/en/financial-markets/foreign-exchange-market/central-bank-exchange-rate-fixing/central-bank-exchange-rate-fixing/daily.txt";
 const fetchLatestRates = () => __awaiter(void 0, void 0, void 0, function* () {
     const response = yield axios_1.default.get(BASE_URL);

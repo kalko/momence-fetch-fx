@@ -1,70 +1,89 @@
 "use strict";
-var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
-    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
-    return new (P || (P = Promise))(function (resolve, reject) {
-        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
-        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
-        step((generator = generator.apply(thisArg, _arguments || [])).next());
-    });
-};
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getRatesByDate = exports.getAllRates = exports.updateRatesByDate = exports.updateLatestRates = void 0;
-const moment_1 = __importDefault(require("moment"));
-const rates_1 = require("../helpers/rates");
-const updateLatestRates = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    try {
-        const rates = yield (0, rates_1.fetchLatestRates)();
-        console.log("Latest rates updated successfully");
-        res.status(200).json("Latest day rates updated successfully");
-    }
-    catch (error) {
-        res.status(500).json({ error: "Error updating latest rates" });
-    }
-});
-exports.updateLatestRates = updateLatestRates;
-const updateRatesByDate = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const { date } = req.params;
-    try {
-        if (!(0, moment_1.default)(date, "YYYY-MM-DD", true).isValid()) {
-            res.status(400).json({ error: "Invalid date format" });
-        }
-        const rates = yield (0, rates_1.fetchRatesByDate)(date);
-        console.log(`Rates for ${date} were updated successfully`);
-        res.status(200).json(`Rates for ${date} were updated successfully`);
-    }
-    catch (error) {
-        res.status(500).json({ error: `Error updating rates for date ${date}` });
-    }
-});
-exports.updateRatesByDate = updateRatesByDate;
-const getAllRates = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    try {
-        const rates = yield (0, rates_1.getRates)();
-        console.log("Get all rates sucessful");
-        res.json(rates);
-    }
-    catch (error) {
-        res.status(500).json({ error: "Error fetching all rates" });
-    }
-});
-exports.getAllRates = getAllRates;
-const getRatesByDate = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const { date } = req.params;
-    try {
-        if (!(0, moment_1.default)(date, "YYYY-MM-DD", true).isValid()) {
-            res.status(400).json({ error: "Invalid date format" });
-        }
-        const rateDate = new Date(date);
-        const rates = yield (0, rates_1.getRates)(rateDate);
-        console.log(`Get rates for ${date} sucessful`);
-        res.json(rates);
-    }
-    catch (error) {
-        res.status(500).json({ error: `Error fetching rates for date ${date}` });
-    }
-});
-exports.getRatesByDate = getRatesByDate;
+const express_1 = __importDefault(require("express"));
+const rates_1 = require("../controllers/rates");
+const router = express_1.default.Router();
+/**
+ * @swagger
+ * /update/latest:
+ *   post:
+ *     summary: Update latests FX rates
+ *     responses:
+ *       200:
+ *         description: Rates updated successfully
+ *         content:
+ *           application/json:
+ *             example:
+ *               message: "Latest rates updated successfully"
+ */
+router.post("/update/latest", rates_1.updateLatestRates);
+/**
+ * @swagger
+ * /update/{date}:
+ *   post:
+ *     summary: Update FX rates for a specific date
+ *     parameters:
+ *       - name: date
+ *         in: path
+ *         required: true
+ *         description: Date in YYYY-MM-DD format
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: Rates updated successfully
+ *         content:
+ *           application/json:
+ *             example:
+ *               message: "Rates for 2024-11-05 updated successfully"
+ */
+router.post("/update/:date", rates_1.updateRatesByDate);
+/**
+ * @swagger
+ * /rates:
+ *   get:
+ *     summary: List all FX rates
+ *     responses:
+ *       200:
+ *         description: A list of FX rates
+ *         content:
+ *           application/json:
+ *             example:
+ *               - currency: "AUD"
+ *                 rate: 15.306
+ *                 amount: 1
+ *                 country: "Australia"
+ *                 forDate: "2024-11-04"
+ *                 fetchDatetime: "2024-11-05T10:52:03.168Z"
+ */
+router.get("/rates", rates_1.getAllRates);
+/**
+ * @swagger
+ * /rates/{date}:
+ *   get:
+ *     summary: List FX rates for a specific date
+ *     parameters:
+ *       - name: date
+ *         in: path
+ *         required: true
+ *         description: Date in YYYY-MM-DD format
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: A list of FX rates for the specified date
+ *         content:
+ *           application/json:
+ *             example:
+ *               - currency: "AUD"
+ *                 rate: 15.306
+ *                 amount: 1
+ *                 country: "Australia"
+ *                 forDate: "2024-11-04"
+ *                 fetchDatetime: "2024-11-05T10:52:03.168Z"
+ */
+router.get("/rates/:date", rates_1.getRatesByDate);
+exports.default = router;
